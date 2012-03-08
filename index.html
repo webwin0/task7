@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Full widget</title>  
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!--[if IE]>
+  <script src="js/util/ie_storage.js"></script>
+  <![endif]-->
+  <script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
+  <script src="js/general.js"></script>
+  <script src="js/util/table.js"></script>
+  <script src="js/util/modal_dialog.js"></script>
+  <script src="js/util/calendar.js"></script>
+  <script src="js/util/vipadalka.js"></script>
+  <script src="js/util/render_table.js"></script>
+  <script src="js/util/range.js"></script>
+  <script src="js/util/field.js"></script>
+  <script src="js/util/fill_form.js"></script>
+</head>
+<body>
+	<div class="col_50" id="modal">
+		<div class="right close" onclick="modalDialog.hide();">x</div>
+		<form action="action" id="data_form" method="GET" autocomplete="off" class="form">
+			<h1 id="form_title">Добавить пользователя</h2>
+			<input type="hidden" name="id" id="f_id" value="">
+			<table class="val" width="100%">
+				<tr>
+					<td width="25%">Имя и фамилия</td>
+					<td width="75%"><input type="text" id="f_name" name="name" value="" class="long"></td>
+				</tr>
+				<tr>
+					<td>Возраст</td>
+					<td class="td_slider">
+					<input type="range" name="age" id="f_age" value=""><span class="range_text">полных лет</span>
+					</td>
+				</tr>
+				<tr>
+					<td>Город</td>
+					<td>
+						<div class="selects_block">
+							<select name="city" id="f_city">
+								<option value="7" selected="selected">Київ</option>
+								<option value="1">Вінниця</option>
+								<option value="11">Львів</option>
+								<option value="13">Одеса</option>
+								<option value="2">Дніпропетровськ</option>
+								<option value="3">Донецьк</option>
+								<option value="4">Житомир</option>
+								<option value="5">Запоріжжя</option>
+								<option value="6">Івано-Франківськ</option>
+								<option value="8">Кіровоград</option>
+								<option value="9">Луганськ</option>
+								<option value="10">Луцьк</option>
+								<option value="12">Миколаїв</option>
+								<option value="14">Харків</option>
+								<option value="15">Херсон</option>
+								<option value="16">Хмельницький</option>
+								<option value="17">Чернігів</option>
+								<option value="18">Чернівці</option>
+								<option value="19">Черкаси</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Зарплата</td>
+					<td class="td_slider"> <input type="range" name="salary" id="f_salary" min="1000" step="200" max="160000" value=""></td>
+				</tr>
+				<tr>
+					<td valign="top">Телефоны</td>
+					<td><input type="text" id="f_phone" name="" value=""></td>
+				</tr>
+				<tr>
+					<td valign="top">Почта</td>
+					<td><input type="email" id="f_email" name="" value=""></td>
+				</tr>
+				<tr>
+					<td valign="top">Сайты</td>
+					<td><input type="url" id="f_site" name="" value=""></td>
+				</tr>
+				<tr>
+					<td>Дата рождения</td>
+					<td><input type="text" id="f_birthday" name="birthday" class="date" value=""></td>
+				</tr>
+				<tr>
+					<td valign="top">Описание</td>
+					<td><textarea id="f_description" name="description" class="long" cols="30" rows="3"></textarea></td>
+				</tr>
+			</table>
+			<input type="button" onclick="table.saveRecord()" id="form_btn" class="button center" value="Сохранить">
+		</form>
+	</div>
+
+  <div class="container">
+
+    <header class="header clearfix">
+      <div class="logo">Two-books.net</div>
+
+      <nav class="menu_main">
+        <ul>
+          <li class="active"><a href="#">О сервисе</a></li>
+          <li><a href="#">Книги</a></li>
+          <li><a href="#">Рецензии</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="info">
+
+      <article class="article clearfix">
+        <div class="clearfix"></div>
+        <h1>Список лучших книг</h1>
+
+        <div class="col_100">
+          <form action="#" method="post" class="form">
+            <p class="col_33">
+              <label for="name">Поиск по имени и описанию</label><br/>
+              <input type="text" name="name" onkeyup="table.setQuery(this.value)" id="name" value="" />
+            </p>
+            <p class="col_33">
+              <label for="select-choice">Город:</label><br/>
+              <select name="select-choice" id="select-choice" onchange="table.setCity(this.value)">
+             	 <option value="">---</option>
+              </select>
+
+            </p>
+            <div class="clearfix"></div>
+          </form>
+        </div>
+
+        <div class="clearfix"></div>
+		<br>
+
+        <div class="col_100" id="main_content">
+        
+        <table class="table" width="1130">
+	        <thead>
+		        <tr class="head">
+					<th nowrap onclick="table.sortByField('name')" data-field="name">Имя</th>
+					<th nowrap class="text_right" onclick="table.sortByField('age')" data-field="age">Возраст</th>
+					<th nowrap class="text_right" onclick="table.sortByField('salary')" data-field="salary">Зарплата </th>
+					<th nowrap onclick="table.sortByField('city')" data-field="city">Город</th>
+					<th nowrap >Телефоны </th>
+					<th nowrap>Почта</th>
+					<th nowrap>Сайты</th>
+					<th nowrap>Дата рождения</th>
+					<th nowrap>Описание</th>
+					<th nowrap class="last"></th>
+				</tr>
+			</thead>
+			<tbody id="users_data">
+			</tbody>
+		</table>
+			
+        </div>
+		<input type="button" value="Добавить запись" id="add_record" onclick="table.addRecord()">
+
+		<div class="clear"></div>
+        <div class="clearfix"></div>
+      </article>
+    </div>
+    
+    <footer class="footer clearfix">
+      <div class="copyright">Книги для развития и удовольствия</div>
+      <nav class="menu_bottom">
+        <ul>
+          <li class="active"><a href="#">О сервисе</a></li>
+          <li><a href="#">Книги</a></li>
+          <li><a href="#">Рецензии</a></li>
+        </ul>
+      </nav>
+    </footer>
+
+  </div>
+</body>
+</html>
