@@ -7,7 +7,8 @@ function Table(conf)
 		city : conf.city || '',
 		recordId : conf.recordId || '',
 		q : conf.q || ''},
-		tableHead = document.getElementsByClassName('head')[0];
+		tableHead = document.getElementsByClassName('head')[0],
+		self = this	;
 	
 	this.setCity = function(city)
 	{
@@ -46,6 +47,16 @@ function Table(conf)
 				break;
 			case 'city': data.sort(sortByCity) 
 				break;
+			case 'description': data.sort(sortByDescription) 
+				break;
+			case 'birthday': data.sort(sortByBirthday) 
+				break;
+			case 'emails': data.sort(sortByEmails) 
+				break;
+			case 'phones': data.sort(sortByPhones) 
+				break;
+			case 'sites': data.sort(sortBySites) 
+				break;
 		}
 		function sortByAge(a, b){
 		  	return b.age - a.age;
@@ -57,6 +68,51 @@ function Table(conf)
 			var aName = a.name.toLowerCase();
 		  	var bName = b.name.toLowerCase(); 
 		  	return ((bName < aName) ? -1 : ((bName > aName) ? 1 : 0));
+		}
+		function sortByPhones(a, b){
+			var aPhone = '',
+				bPhone = '';
+			if (a.phones !== undefined)
+				aPhone = a.phones.join('');
+		  	if (b.phones !== undefined)
+		  		bPhone = b.phones.join(''); 
+		  	return ((bPhone < aPhone) ? -1 : ((bPhone > aPhone) ? 1 : 0));
+		}
+		function sortByEmails(a, b){
+			var aEmail = '',
+				bEmail = '';
+			if (a.emails !== undefined)
+				aEmail = a.emails.join('');
+		  	if (b.emails !== undefined)
+		  		bEmail = b.emails.join(''); 
+		  	return ((bEmail < aEmail) ? -1 : ((bEmail > aEmail) ? 1 : 0));
+		}
+		function sortBySites(a, b){
+			var aSites = '',
+				bSites = '';
+			if (a.sites !== undefined)
+				aSites = a.sites.join('');
+		  	if (b.sites !== undefined)
+		  		bSites = b.sites.join(''); 
+		  	return ((bSites < aSites) ? -1 : ((bSites > aSites) ? 1 : 0));
+		}
+		function sortByBirthday(a, b){
+			var aDate = a.birthday.split('.');
+			if (aDate.length==3)
+				aDate =  new Date(aDate[2], aDate[1]-1,aDate[0]);
+			else
+				aDate =  new Date(0)
+		  	var bDate = b.birthday.split('.');
+		  	if (bDate.length == 3)
+				bDate =  new Date(bDate[2], bDate[1]-1,bDate[0]);
+			else
+				bDate =  new Date(0)
+		  	return ((bDate < aDate) ? -1 : ((bDate > aDate) ? 1 : 0));
+		}
+		function sortByDescription(a, b){
+			var aDescription = a.description.toLowerCase();
+		  	var bDescription = b.description.toLowerCase(); 
+		  	return ((bDescription < aDescription) ? -1 : ((bDescription > aDescription) ? 1 : 0));
 		}
 		function sortByCity(a, b){
 			return b.city - a.city;
@@ -111,7 +167,7 @@ function Table(conf)
 		{
 			field = form_data[i];
 			if (field.name.indexOf('[]')==-1)
-				row[field.name] = field.value;
+				row[field.name] = utils.strip_tags(field.value);
 			else
 			{
 				name = field.name.replace('[]','');
@@ -122,7 +178,8 @@ function Table(conf)
 					row[name] = [];
 					len = 0;
 				}
-				row[name][len] = field.value
+				if (field.value != '')
+					row[name][len] = utils.strip_tags(field.value);
 			}
 			
 		}
@@ -149,7 +206,7 @@ function Table(conf)
 		updateFilter();
 		if (!history.pushState) 
 			return;
-		var url = location.protocol + '//' + location.host + location.pathname + prepareParams();
+		var url = location.protocol + '//' + location.host + location.pathname + self.prepareParams();
 		history.pushState(config, "", url);
 		var renderTable = new RenderTable('#users_data',data, dataConfig);
 	}
@@ -177,7 +234,7 @@ function Table(conf)
 				return 0;
 		}
 	}
-	function prepareParams()
+	this.prepareParams = function()
 	{
 		var params = []
 		for (var i in config)
@@ -199,15 +256,26 @@ function Table(conf)
 			history.replaceState(config, "", location.protocol + '//' + location.host + location.pathname + table.prepareParams());
 		}
 	});
-	utils.addEvent(window,'scroll',function(){
-  		var scrollPos = utils.getScrollOffsets();
-  		var tableHead = document.getElementsByClassName('head')[0]
-  		var elementPos = utils.findAbsPositon(tableHead);
-  		if (elementPos.y > 0 )
-  			tableHead.setAttribute('data-y',elementPos.y)
-  		if (scrollPos.y > elementPos.y)
-  			tableHead.setAttribute('style','position:fixed;top:0px;');
-  		if (scrollPos.y < tableHead.getAttribute('data-y'))
-  			tableHead.setAttribute('style','');
+	$(window).scroll(function(){
+  		var scrollPos = utils.getScrollOffsets(),
+  		 	tableHead = $('.head'),
+  		 	elementPos = utils.findAbsPositon(tableHead.get(0));// tableHead.offset();
+  		if (elementPos !== undefined && elementPos.top > 0 )
+  			tableHead.attr('data-top',elementPos.top)
+  		if (scrollPos.top > tableHead.attr('data-top'))
+  		{
+  			tableHead.width($('.table').width());
+  			tableHead.addClass('fixed');
+  			tableHead.find('th').each(function(i){
+  				td_width = $('.table tbody td').eq(i).width()
+  				th_width = $('.table thead th').eq(i).innerWidth(td_width)
+  				if (td_width != th_width)
+  					$('.table thead th').eq(i).width(td_width)
+  			})
+  		}
+  		else
+  		{
+  			tableHead.removeClass('fixed');
+  		}
   	});
 }

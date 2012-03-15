@@ -8,7 +8,11 @@
   <!--[if IE]>
   <script src="js/util/ie_storage.js"></script>
   <![endif]-->
-  <script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
+  
+  <script src="js/lib/jquery-1.7.1.min.js"></script>
+  <script src="js/lib/rangeinput.js"></script>
+  <script src="js/lib/validator.js"></script>
+    
   <script src="js/general.js"></script>
   <script src="js/util/table.js"></script>
   <script src="js/util/modal_dialog.js"></script>
@@ -21,14 +25,14 @@
 </head>
 <body>
 	<div class="col_50" id="modal">
-		<div class="right close" onclick="modalDialog.hide();">x</div>
+		<div class="right close" onclick="modalDialog.hide();">˟</div>
 		<form action="action" id="data_form" method="GET" autocomplete="off" class="form">
 			<h1 id="form_title">Добавить пользователя</h2>
 			<input type="hidden" name="id" id="f_id" value="">
 			<table class="val" width="100%">
 				<tr>
-					<td width="25%">Имя и фамилия</td>
-					<td width="75%"><input type="text" id="f_name" name="name" value="" class="long"></td>
+					<td width="20%">Имя и фамилия</td>
+					<td width="80%"><input type="text" id="f_name" name="name" value="" class="long"></td>
 				</tr>
 				<tr>
 					<td>Возраст</td>
@@ -70,15 +74,15 @@
 				</tr>
 				<tr>
 					<td valign="top">Телефоны</td>
-					<td><input type="text" id="f_phone" name="" value=""></td>
+					<td><input type="text" id="f_phone" name="phones[]" value=""></td>
 				</tr>
 				<tr>
 					<td valign="top">Почта</td>
-					<td><input type="email" id="f_email" name="" value=""></td>
+					<td><input type="email" id="f_email" name="emails[]" value=""></td>
 				</tr>
 				<tr>
 					<td valign="top">Сайты</td>
-					<td><input type="url" id="f_site" name="" value=""></td>
+					<td><input type="url" id="f_site" name="sites[]" value=""></td>
 				</tr>
 				<tr>
 					<td>Дата рождения</td>
@@ -135,19 +139,20 @@
 
         <div class="col_100" id="main_content">
         
-        <table class="table" width="1130">
+        <table class="table" >
+		   
 	        <thead>
-		        <tr class="head">
+		        <tr class="head"  >
 					<th nowrap onclick="table.sortByField('name')" data-field="name">Имя</th>
 					<th nowrap class="text_right" onclick="table.sortByField('age')" data-field="age">Возраст</th>
 					<th nowrap class="text_right" onclick="table.sortByField('salary')" data-field="salary">Зарплата </th>
 					<th nowrap onclick="table.sortByField('city')" data-field="city">Город</th>
-					<th nowrap >Телефоны </th>
-					<th nowrap>Почта</th>
-					<th nowrap>Сайты</th>
-					<th nowrap>Дата рождения</th>
-					<th nowrap>Описание</th>
-					<th nowrap class="last"></th>
+					<th nowrap onclick="table.sortByField('phones')" data-field="phones">Телефоны </th>
+					<th nowrap onclick="table.sortByField('emails')" data-field="emails">Почта</th>
+					<th nowrap onclick="table.sortByField('sites')" data-field="sites">Сайты</th>
+					<th nowrap class="text_right" onclick="table.sortByField('birthday')" data-field="birthday">Дата рождения</th>
+					<th nowrap onclick="table.sortByField('description')" data-field="description">Описание</th>
+					<th nowrap class="last">&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody id="users_data">

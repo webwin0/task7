@@ -28,18 +28,18 @@ var utils = {
 					curleft += obj.offsetLeft;
 					curtop += obj.offsetTop;
 				} while (obj = obj.offsetParent);
-				return {x:curleft,y:curtop};
+				return {left:curleft,top:curtop};
 			}
 		},
 		//get scroll offset
 		getScrollOffsets: function (w) {
 			w = w || window;
 			if (w.pageXOffset != null) 
-				return {x: w.pageXOffset, y:w.pageYOffset};
+				return {left: w.pageXOffset, top:w.pageYOffset};
 			var d = w.document;
 			if (document.compatMode == "CSS1Compat")
-				return {x:d.documentElement.scrollLeft, y:d.documentElement.scrollTop};
-			return { x: d.body.scrollLeft, y: d.body.scrollTop };
+				return {left:d.documentElement.scrollLeft, top:d.documentElement.scrollTop};
+			return { left: d.body.scrollLeft, top: d.body.scrollTop };
 		},
 		// add event listener
 		addEvent: function (target, type, handler) {
@@ -135,7 +135,7 @@ var defaultData = [{id:'1',name:"Андрей Иванов",salary:'24000',city:
   	];
 var dataConfig = {
 	lastId:10,
-	maxLength:20,
+	maxLength:19,
 	format: {salary:'number',
 			age:'number',
 			sites:'url',

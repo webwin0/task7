@@ -18,28 +18,31 @@ function Field (sel, config)
 		for (var i in data)
 		{
 			val = data[i];
-			el.next().click();
+			if (i==0)
+				el.val(val)
+			else
+				el.next().click();
 		}
 		data = [];
 		val = '';
 	}
-	el.wrap('<div></div>').after(' <input type="button" class="control" value="+">')	
+	el.wrap('<div></div>').after(' <input type="button" class="control" value="+">');
+	el.parent().wrap('<span></span>');	
 	el.next().click(onAddField)
 	if (data.length > 0)
 		this.addValues(data)
 	
 	function onAddField()
 	{
-		if (index <= max)
+		if (index < max)
 		{
-			var div = $(this).parent();
-			el.parent().clone(true).insertAfter(div)
-			div.next().find('input:text, input:email, input:url').val(el.val() || val).attr('name',name).end().find('input:button').val('-').unbind('click',onAddField).bind('click',onDelField);
-			el.val('').focus();
+			var div = $(this).parent(),
+				globalDiv = $(this).parent().parent();
+			el.parent().clone(true).appendTo(globalDiv)
+			$('div',globalDiv).last().find('input:text, input:email, input:url').val(val || '').attr({'name':name, id:sel+index}).focus().end().find('input:button').val('-').unbind('click',onAddField).bind('click',onDelField);
+			//el.val('').focus();
 			index++;
 		}
-		if (index == max+1)
-			el.parent().hide('slow');
 	}
 	function onDelField()
 	{
@@ -48,7 +51,5 @@ function Field (sel, config)
 			$(this).parent().remove();
 			index--;
 		}
-		if (index <= max)
-			el.parent().show('slow');
 	}
 }
