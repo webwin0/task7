@@ -17,7 +17,7 @@ function RenderTable(sel, data, config)
 		{
 			html += renderTd(fields[j], row[fields[j]]);
 		}
-		html +='<td nowrap class="last"><i class="edit edit_record hide" title="Редактировать" onclick="table.editRecord('+row.id+')"></i></td>'
+		html +='<td nowrap class="last"><i class="edit edit_record hide" title="Редактировать" row_id="'+row.id+'" ></i></td>'
 		html += '</tr>';
 		el.append(html)
 	}

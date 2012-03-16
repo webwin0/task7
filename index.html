@@ -12,9 +12,10 @@
   <script src="js/lib/jquery-1.7.1.min.js"></script>
   <script src="js/lib/rangeinput.js"></script>
   <script src="js/lib/validator.js"></script>
-    
+  <script src="js/util/utils.js"></script>  
   <script src="js/general.js"></script>
   <script src="js/util/table.js"></script>
+  
   <script src="js/util/modal_dialog.js"></script>
   <script src="js/util/calendar.js"></script>
   <script src="js/util/vipadalka.js"></script>
@@ -93,7 +94,7 @@
 					<td><textarea id="f_description" name="description" class="long" cols="30" rows="3"></textarea></td>
 				</tr>
 			</table>
-			<input type="button" onclick="table.saveRecord()" id="form_btn" class="button center" value="Сохранить">
+			<input type="button" id="form_btn" class="button center" value="Сохранить">
 		</form>
 	</div>
 
@@ -121,11 +122,11 @@
           <form action="#" method="post" class="form">
             <p class="col_33">
               <label for="name">Поиск по имени и описанию</label><br/>
-              <input type="text" name="name" onkeyup="table.setQuery(this.value)" id="name" value="" />
+              <input type="text" name="name" id="name" value="" />
             </p>
             <p class="col_33">
-              <label for="select-choice">Город:</label><br/>
-              <select name="select-choice" id="select-choice" onchange="table.setCity(this.value)">
+              <label for="select_city">Город:</label><br/>
+              <select name="select-choice" id="select_city">
              	 <option value="">---</option>
               </select>
 
@@ -143,15 +144,15 @@
 		   
 	        <thead>
 		        <tr class="head"  >
-					<th nowrap onclick="table.sortByField('name')" data-field="name">Имя</th>
-					<th nowrap class="text_right" onclick="table.sortByField('age')" data-field="age">Возраст</th>
-					<th nowrap class="text_right" onclick="table.sortByField('salary')" data-field="salary">Зарплата </th>
-					<th nowrap onclick="table.sortByField('city')" data-field="city">Город</th>
-					<th nowrap onclick="table.sortByField('phones')" data-field="phones">Телефоны </th>
-					<th nowrap onclick="table.sortByField('emails')" data-field="emails">Почта</th>
-					<th nowrap onclick="table.sortByField('sites')" data-field="sites">Сайты</th>
-					<th nowrap class="text_right" onclick="table.sortByField('birthday')" data-field="birthday">Дата рождения</th>
-					<th nowrap onclick="table.sortByField('description')" data-field="description">Описание</th>
+					<th nowrap data-field="name">Имя</th>
+					<th nowrap data-field="age" class="text_right">Возраст</th>
+					<th nowrap data-field="salary" class="text_right">Зарплата </th>
+					<th nowrap data-field="city">Город</th>
+					<th nowrap data-field="phones">Телефоны </th>
+					<th nowrap data-field="emails">Почта</th>
+					<th nowrap data-field="sites">Сайты</th>
+					<th nowrap data-field="birthday" class="text_right">Дата рождения</th>
+					<th nowrap data-field="description">Описание</th>
 					<th nowrap class="last">&nbsp;</th>
 				</tr>
 			</thead>
@@ -160,7 +161,7 @@
 		</table>
 			
         </div>
-		<input type="button" value="Добавить запись" id="add_record" onclick="table.addRecord()">
+		<input type="button" value="Добавить запись" id="add_record">
 
 		<div class="clear"></div>
         <div class="clearfix"></div>

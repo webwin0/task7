@@ -14,6 +14,7 @@ function Field (sel, config)
 			el.parent().next().remove();
 			index--;
 		}
+		el.val('');
 		//add new values
 		for (var i in data)
 		{

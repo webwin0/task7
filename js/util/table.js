@@ -7,158 +7,62 @@ function Table(conf)
 		city : conf.city || '',
 		recordId : conf.recordId || '',
 		q : conf.q || ''},
-		tableHead = document.getElementsByClassName('head')[0],
+		tableHead = $(conf.headSelector),
+		tbl = $(conf.tableSelector),
 		self = this	;
-	
-	this.setCity = function(city)
+		
+	$('#name').keyup(setQuery);
+	$('#select_city').change(setCity);
+	$('#add_record').click(addRecord);
+	tableHead.find('th[data-field]').click(sortByField);
+	$('.edit_record').live('click',editRecord);
+	$('#form_btn').click(saveRecord)
+	function setCity()
 	{
-		config.city = city;
+		config.city = $(this).val();
 		updateTable();
 	}
-	this.setQuery = function(q)
+	function setQuery()
 	{
-		config.q = q.toLowerCase();
+		config.q = $(this).val().toLowerCase();
 		updateTable();
 	}
-	this.sortByField = function(field)
+	function sortByField()
 	{
+		var field = $(this).attr('data-field');
 		config.sortField = field;
 		config.sortOrder = config.sortOrder == 'asc' ? 'desc' : 'asc';
-		var c = tableHead.childNodes
-		for ( var i = 0; i < c.length; i++ ) 
-		{
-			if ( c[i].nodeType == 1 )
-			{
-				utils.removeClass(c[i],'sort').removeClass(c[i],'asc').removeClass(c[i],'desc');
-				if (c[i].getAttribute('data-field')==field)
-				{
-					utils.addClass(c[i],'sort');
-					utils.addClass(c[i],config.sortOrder);
-				}
-			}
-		}
-		switch (config.sortField)
-		{
-			case 'name': data.sort(sortByName) 
-				break;
-			case 'age': data.sort(sortByAge) 
-				break;
-			case 'salary': data.sort(sortBySalary) 
-				break;
-			case 'city': data.sort(sortByCity) 
-				break;
-			case 'description': data.sort(sortByDescription) 
-				break;
-			case 'birthday': data.sort(sortByBirthday) 
-				break;
-			case 'emails': data.sort(sortByEmails) 
-				break;
-			case 'phones': data.sort(sortByPhones) 
-				break;
-			case 'sites': data.sort(sortBySites) 
-				break;
-		}
-		function sortByAge(a, b){
-		  	return b.age - a.age;
-		}
-		function sortBySalary(a, b){
-		  	return b.salary - a.salary;
-		}
-		function sortByName(a, b){
-			var aName = a.name.toLowerCase();
-		  	var bName = b.name.toLowerCase(); 
-		  	return ((bName < aName) ? -1 : ((bName > aName) ? 1 : 0));
-		}
-		function sortByPhones(a, b){
-			var aPhone = '',
-				bPhone = '';
-			if (a.phones !== undefined)
-				aPhone = a.phones.join('');
-		  	if (b.phones !== undefined)
-		  		bPhone = b.phones.join(''); 
-		  	return ((bPhone < aPhone) ? -1 : ((bPhone > aPhone) ? 1 : 0));
-		}
-		function sortByEmails(a, b){
-			var aEmail = '',
-				bEmail = '';
-			if (a.emails !== undefined)
-				aEmail = a.emails.join('');
-		  	if (b.emails !== undefined)
-		  		bEmail = b.emails.join(''); 
-		  	return ((bEmail < aEmail) ? -1 : ((bEmail > aEmail) ? 1 : 0));
-		}
-		function sortBySites(a, b){
-			var aSites = '',
-				bSites = '';
-			if (a.sites !== undefined)
-				aSites = a.sites.join('');
-		  	if (b.sites !== undefined)
-		  		bSites = b.sites.join(''); 
-		  	return ((bSites < aSites) ? -1 : ((bSites > aSites) ? 1 : 0));
-		}
-		function sortByBirthday(a, b){
-			var aDate = a.birthday.split('.');
-			if (aDate.length==3)
-				aDate =  new Date(aDate[2], aDate[1]-1,aDate[0]);
-			else
-				aDate =  new Date(0)
-		  	var bDate = b.birthday.split('.');
-		  	if (bDate.length == 3)
-				bDate =  new Date(bDate[2], bDate[1]-1,bDate[0]);
-			else
-				bDate =  new Date(0)
-		  	return ((bDate < aDate) ? -1 : ((bDate > aDate) ? 1 : 0));
-		}
-		function sortByDescription(a, b){
-			var aDescription = a.description.toLowerCase();
-		  	var bDescription = b.description.toLowerCase(); 
-		  	return ((bDescription < aDescription) ? -1 : ((bDescription > aDescription) ? 1 : 0));
-		}
-		function sortByCity(a, b){
-			return b.city - a.city;
-		}
+		tableHead.find('th').each(function(){
+			$(this).removeClass('sort asc desc');
+			if ($(this).attr('data-field')==field)
+					$(this).addClass('sort '+config.sortOrder)
+		})
+		eval('data.sort(sortFunctions.sortBy'+config.sortField+')');
+		
 		if (config.sortOrder == 'desc')
 			data.reverse();
 		updateTable();
 	}
-	this.fillCities = function(sel,data)
-  	{
-  		var cities = [];
-  		for(var i in data)
-  		{
-  			if ($.inArray(data[i].city,cities)==-1)
-  				cities[i] = data[i].city;
-  		}
-  		cities.sort(sortByName)
-  		for (i in cities)
-  		{
-  			$(sel).append('<option value="'+cities[i]+'">'+dataConfig.cities[cities[i]]+'</option>');
-  		}
-  		function sortByName(a, b){
-		  	return a - b;
-		}
-  	}
-	this.editRecord = function(id)
+	function editRecord()
 	{
-		var row;
-			FillForm.init({titleId:'#form_title',buttonId:'#form_btn',titleText:'Редактировать пользователя',buttonText:'Редактировать'})
+		var row,
+			id = $(this).attr('row_id');
+		var form = new FillForm({titleId:'#form_title',buttonId:'#form_btn',titleText:'Редактировать пользователя',buttonText:'Редактировать',require:['#f_name','#f_description']})
 		for (var i in data)
 		{
 			if (data[i].id == id)
 			{
-				FillForm.fillData(data[i]);
+				form.fillData(data[i]);
 				break;
 			}
 		}
 	}
-	this.addRecord = function()
+	function addRecord()
 	{
-		FillForm.init({titleId:'#form_title',buttonId:'#form_btn',titleText:'Добавить пользователя',buttonText:'Добавить'})
-		FillForm.fillData({id:'',name:'',age:'',salary:'',city:'1',phones:[],emails:[],sites:[],birthday:'',description:''});
+		var form = new FillForm({titleId:'#form_title',buttonId:'#form_btn',titleText:'Добавить пользователя',buttonText:'Добавить',require:['#f_name','#f_description']})
+		form.fillData({id:'',name:'',age:'',salary:'',city:'1',phones:[],emails:[],sites:[],birthday:'',description:''});
 	}
-	
-	
-	this.saveRecord = function()
+	function saveRecord()
 	{
 		var field, row = {}, name;
 		$('#f_birthday').val($('#f_birthday').attr('src_value'));
@@ -181,7 +85,6 @@ function Table(conf)
 				if (field.value != '')
 					row[name][len] = utils.strip_tags(field.value);
 			}
-			
 		}
 		if (row.id == '')
 		{
@@ -206,7 +109,7 @@ function Table(conf)
 		updateFilter();
 		if (!history.pushState) 
 			return;
-		var url = location.protocol + '//' + location.host + location.pathname + self.prepareParams();
+		var url = location.protocol + '//' + location.host + location.pathname + prepareParams();
 		history.pushState(config, "", url);
 		var renderTable = new RenderTable('#users_data',data, dataConfig);
 	}
@@ -234,7 +137,7 @@ function Table(conf)
 				return 0;
 		}
 	}
-	this.prepareParams = function()
+	function prepareParams()
 	{
 		var params = []
 		for (var i in config)
@@ -244,7 +147,7 @@ function Table(conf)
 		}
 		return '?'+params.join('&');
 	}
-	utils.addEvent(document,'keyup',modalDialog.hideModalDialog);
+	$(document).keyup(modalDialog.hideModalDialog);
 	utils.addEvent(window,'popstate',function(event){
 		if (event.state) { 
 			config = event.state; 
@@ -253,12 +156,11 @@ function Table(conf)
 		else 
 		{
 			table = new Table(config);
-			history.replaceState(config, "", location.protocol + '//' + location.host + location.pathname + table.prepareParams());
+			history.replaceState(config, "", location.protocol + '//' + location.host + location.pathname + prepareParams());
 		}
 	});
 	$(window).scroll(function(){
   		var scrollPos = utils.getScrollOffsets(),
-  		 	tableHead = $('.head'),
   		 	elementPos = utils.findAbsPositon(tableHead.get(0));// tableHead.offset();
   		if (elementPos !== undefined && elementPos.top > 0 )
   			tableHead.attr('data-top',elementPos.top)
