@@ -7,102 +7,62 @@ function Table(conf)
 		city : conf.city || '',
 		recordId : conf.recordId || '',
 		q : conf.q || ''},
-		tableHead = document.getElementsByClassName('head')[0];
-	
-	this.setCity = function(city)
+		tableHead = $(conf.headSelector),
+		tbl = $(conf.tableSelector),
+		self = this	;
+		
+	$('#name').keyup(setQuery);
+	$('#select_city').change(setCity);
+	$('#add_record').click(addRecord);
+	tableHead.find('th[data-field]').click(sortByField);
+	$('.edit_record').live('click',editRecord);
+	$('#form_btn').click(saveRecord)
+	function setCity()
 	{
-		config.city = city;
+		config.city = $(this).val();
 		updateTable();
 	}
-	this.setQuery = function(q)
+	function setQuery()
 	{
-		config.q = q.toLowerCase();
+		config.q = $(this).val().toLowerCase();
 		updateTable();
 	}
-	this.sortByField = function(field)
+	function sortByField()
 	{
+		var field = $(this).attr('data-field');
 		config.sortField = field;
 		config.sortOrder = config.sortOrder == 'asc' ? 'desc' : 'asc';
-		var c = tableHead.childNodes
-		for ( var i = 0; i < c.length; i++ ) 
-		{
-			if ( c[i].nodeType == 1 )
-			{
-				utils.removeClass(c[i],'sort').removeClass(c[i],'asc').removeClass(c[i],'desc');
-				if (c[i].getAttribute('data-field')==field)
-				{
-					utils.addClass(c[i],'sort');
-					utils.addClass(c[i],config.sortOrder);
-				}
-			}
-		}
-		switch (config.sortField)
-		{
-			case 'name': data.sort(sortByName) 
-				break;
-			case 'age': data.sort(sortByAge) 
-				break;
-			case 'salary': data.sort(sortBySalary) 
-				break;
-			case 'city': data.sort(sortByCity) 
-				break;
-		}
-		function sortByAge(a, b){
-		  	return b.age - a.age;
-		}
-		function sortBySalary(a, b){
-		  	return b.salary - a.salary;
-		}
-		function sortByName(a, b){
-			var aName = a.name.toLowerCase();
-		  	var bName = b.name.toLowerCase(); 
-		  	return ((bName < aName) ? -1 : ((bName > aName) ? 1 : 0));
-		}
-		function sortByCity(a, b){
-			return b.city - a.city;
-		}
+		tableHead.find('th').each(function(){
+			$(this).removeClass('sort asc desc');
+			if ($(this).attr('data-field')==field)
+					$(this).addClass('sort '+config.sortOrder)
+		})
+		eval('data.sort(sortFunctions.sortBy'+config.sortField+')');
+		
 		if (config.sortOrder == 'desc')
 			data.reverse();
 		updateTable();
 	}
-	this.fillCities = function(sel,data)
-  	{
-  		var cities = [];
-  		for(var i in data)
-  		{
-  			if ($.inArray(data[i].city,cities)==-1)
-  				cities[i] = data[i].city;
-  		}
-  		cities.sort(sortByName)
-  		for (i in cities)
-  		{
-  			$(sel).append('<option value="'+cities[i]+'">'+dataConfig.cities[cities[i]]+'</option>');
-  		}
-  		function sortByName(a, b){
-		  	return a - b;
-		}
-  	}
-	this.editRecord = function(id)
+	function editRecord()
 	{
-		var row;
-			FillForm.init({titleId:'#form_title',buttonId:'#form_btn',titleText:'Редактировать пользователя',buttonText:'Редактировать'})
+		var row,
+			id = $(this).attr('row_id');
+		var form = new FillForm({titleId:'#form_title',buttonId:'#form_btn',titleText:'Редактировать пользователя',buttonText:'Редактировать',require:['#f_name','#f_description']})
 		for (var i in data)
 		{
 			if (data[i].id == id)
 			{
-				FillForm.fillData(data[i]);
+				form.fillData(data[i]);
 				break;
 			}
 		}
 	}
-	this.addRecord = function()
+	function addRecord()
 	{
-		FillForm.init({titleId:'#form_title',buttonId:'#form_btn',titleText:'Добавить пользователя',buttonText:'Добавить'})
-		FillForm.fillData({id:'',name:'',age:'',salary:'',city:'1',phones:[],emails:[],sites:[],birthday:'',description:''});
+		var form = new FillForm({titleId:'#form_title',buttonId:'#form_btn',titleText:'Добавить пользователя',buttonText:'Добавить',require:['#f_name','#f_description']})
+		form.fillData({id:'',name:'',age:'',salary:'',city:'1',phones:[],emails:[],sites:[],birthday:'',description:''});
 	}
-	
-	
-	this.saveRecord = function()
+	function saveRecord()
 	{
 		var field, row = {}, name;
 		$('#f_birthday').val($('#f_birthday').attr('src_value'));
@@ -111,7 +71,7 @@ function Table(conf)
 		{
 			field = form_data[i];
 			if (field.name.indexOf('[]')==-1)
-				row[field.name] = field.value;
+				row[field.name] = utils.strip_tags(field.value);
 			else
 			{
 				name = field.name.replace('[]','');
@@ -122,9 +82,9 @@ function Table(conf)
 					row[name] = [];
 					len = 0;
 				}
-				row[name][len] = field.value
+				if (field.value != '')
+					row[name][len] = utils.strip_tags(field.value);
 			}
-			
 		}
 		if (row.id == '')
 		{
@@ -187,7 +147,7 @@ function Table(conf)
 		}
 		return '?'+params.join('&');
 	}
-	utils.addEvent(document,'keyup',modalDialog.hideModalDialog);
+	$(document).keyup(modalDialog.hideModalDialog);
 	utils.addEvent(window,'popstate',function(event){
 		if (event.state) { 
 			config = event.state; 
@@ -196,18 +156,28 @@ function Table(conf)
 		else 
 		{
 			table = new Table(config);
-			history.replaceState(config, "", location.protocol + '//' + location.host + location.pathname + table.prepareParams());
+			history.replaceState(config, "", location.protocol + '//' + location.host + location.pathname + prepareParams());
 		}
 	});
-	utils.addEvent(window,'scroll',function(){
-  		var scrollPos = utils.getScrollOffsets();
-  		var tableHead = document.getElementsByClassName('head')[0]
-  		var elementPos = utils.findAbsPositon(tableHead);
-  		if (elementPos.y > 0 )
-  			tableHead.setAttribute('data-y',elementPos.y)
-  		if (scrollPos.y > elementPos.y)
-  			tableHead.setAttribute('style','position:fixed;top:0px;');
-  		if (scrollPos.y < tableHead.getAttribute('data-y'))
-  			tableHead.setAttribute('style','');
+	$(window).scroll(function(){
+  		var scrollPos = utils.getScrollOffsets(),
+  		 	elementPos = utils.findAbsPositon(tableHead.get(0));// tableHead.offset();
+  		if (elementPos !== undefined && elementPos.top > 0 )
+  			tableHead.attr('data-top',elementPos.top)
+  		if (scrollPos.top > tableHead.attr('data-top'))
+  		{
+  			tableHead.width($('.table').width());
+  			tableHead.addClass('fixed');
+  			tableHead.find('th').each(function(i){
+  				td_width = $('.table tbody td').eq(i).width()
+  				th_width = $('.table thead th').eq(i).innerWidth(td_width)
+  				if (td_width != th_width)
+  					$('.table thead th').eq(i).width(td_width)
+  			})
+  		}
+  		else
+  		{
+  			tableHead.removeClass('fixed');
+  		}
   	});
 }

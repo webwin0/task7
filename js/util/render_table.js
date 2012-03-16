@@ -17,7 +17,7 @@ function RenderTable(sel, data, config)
 		{
 			html += renderTd(fields[j], row[fields[j]]);
 		}
-		html +='<td nowrap class="last"><i class="edit edit_record hide" title="Редактировать" onclick="table.editRecord('+row.id+')"></i></td>'
+		html +='<td nowrap class="last"><i class="edit edit_record hide" title="Редактировать" row_id="'+row.id+'" ></i></td>'
 		html += '</tr>';
 		el.append(html)
 	}
@@ -65,7 +65,8 @@ function RenderTable(sel, data, config)
 		if (strip_val.length > dataConfig.maxLength)
 		{
 			str = val;
-			val = '<div class="hint_parent"><span class="hint">'+strip_val.substring(0,dataConfig.maxLength-3) + '...</span><div class="hint_help">'+str+'</div></div>';
+			val = strip_val.substring(0,dataConfig.maxLength-3) + '...';
+			//val = '<div class="hint_parent"><span class="hint">'+strip_val.substring(0,dataConfig.maxLength-3) + '...</span><div class="hint_help">'+str+'</div></div>';
 		}
 		return val;
 	}
@@ -74,10 +75,10 @@ function RenderTable(sel, data, config)
 		var links = [];
 		if (typeof val == 'string' )
 			val = [val];
-	 $.each(val,function(i, val){
-		links[i] = '<a href="'+val+'" target="_blank">'+val.replace('http://','')+'</a>';
-	});
-	return links.join(", ");
+		 $.each(val,function(i, val){
+			links[i] = '<a href="'+val+'" target="_blank">'+val.replace('http://','')+'</a>';
+		});
+		return links.join(", ");
 	}
 	function _dateFormat(val)
 	{
@@ -91,14 +92,4 @@ function RenderTable(sel, data, config)
 	{
 		return dataConfig.cities[val];
 	}
-	function onHintOver()
-	{
-		$(this).parents('td').addClass('show_all');
-	}
-	function onHintOut()
-	{
-		el.find('td').removeClass('show_all');
-	}
-	$('.hint').mouseenter(onHintOver)
-	$('.hint_help').mouseleave(onHintOut)
 }

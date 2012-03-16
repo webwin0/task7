@@ -78,8 +78,8 @@ function Calendar(calendarSelector)
     	$('prev_'+id).onclick = prev;
         $('next_'+id).onclick = next;
         $('month_'+id).onclick = changeMonth;
-        $('year_'+id).onblur = $('year_'+id).onkeypress = enterYear;
-        $('month_'+id).onblur = $('month_'+id).onkeypress = enterMonth;
+        $('year_'+id).onkeypress = enterYear;
+        $('month_'+id).onkeypress = enterMonth;
         var dateList = $('calend'+id).getElementsByTagName('td');
         for (var i=0, len=dateList.length; i<len; i++) {
             if(dateList[i].id !== undefined && dateList[i].id !=='') {
@@ -200,8 +200,8 @@ function Calendar(calendarSelector)
             }  
         var pos = utils.findAbsPositon(srcElement);
         var calendCss = $('calend'+id).style;
-        calendCss.left = pos.x+'px';
-        calendCss.top = (pos.y+ srcElement.offsetHeight)+'px';
+        calendCss.left = pos.left+'px';
+        calendCss.top = (pos.top+ srcElement.offsetHeight)+'px';
         calendCss.display= 'block';
         attacheEvents();
     }

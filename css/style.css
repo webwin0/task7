@@ -333,7 +333,6 @@ a.button:active,
   padding:5px 7px;
   font-weight:normal;
   text-align:left;
-  font-size:16px;
 }
 .table td {
   padding:5px 7px;
@@ -667,9 +666,9 @@ a.button:active,
         padding-right:20px;
       } 
       .vipadayka .button:after {
-		font-size:12px;
-        right:2px;
-        top:2px;
+		font-size:9px;
+        right:5px;
+        top:4px;
         position:absolute;
         content: '▼';
         
@@ -764,7 +763,7 @@ a.button:active,
 
 /* drag handle */
 .handle { 
-	background:#fff url(../img/slider_icon_small.png) no-repeat 0 0; 
+	background:url(../img/slider_icon_small.png) no-repeat 0 0 transparent; 
 	height:11px;
 	width:10px;
 	top:10px;
@@ -815,16 +814,50 @@ a.button:active,
 .head {background:#FFD400;}
 .head th[data-field] {cursor:pointer;}
 #modal {position:absolute;top:30px;left:50%;margin-left:-25%;background:#fff;border:1px solid;display:none;padding:10px;z-index:11;}
-.close {cursor:pointer;}
+.close {cursor:pointer;font-size:20px;}
 td.last {width:16px;paddind:0px;}
-.hint_help {position:absolute;top:0px;left:0px;display:none;z-index:10;background:#CCCCCC;padding-right:10px;margin-right:10px;cursor:pointer;}
+.hint_help {position:absolute;top:0px;left:0px;display:none;z-index:1000000000;background:#CCCCCC;padding-right:20px;cursor:pointer;}
 .show_all .hint_help {display:block;}
-#users_data div.hint_parent {position:relative;}
-.hint {cursor:pointer;}
+#users_data div.hint_parent {position:relative;z-index:8;}
+.hint {cursor:pointer;z-index:9;overflow:hidden;}
 .text_right {text-align:right !important;}
-.val td {padding-left:25px;}
+.val td {padding-left:25px;padding-top:3px;}
+
 #form_title {margin-top:-10px;margin-left:22px;}
 
 input.control {width:25px;text-align:center;}
 input.long, textarea.long {width:90%}
-#form_btn {margin-left:25px;};
+#form_btn {margin-left:25px;}
+.head th:nth-child(1),.table td:nth-child(1)  {
+	min-width:130px;width:130px;
+}
+.head th:nth-child(2), .table td:nth-child(2)  {
+	min-width:80px;width:80px;
+}
+.head th:nth-child(3), .table td:nth-child(3)  {
+	min-width:80px;width:80px;
+}
+.head th:nth-child(4), .table td:nth-child(4)  {
+	min-width:90px;width:90px;
+}
+.head th:nth-child(5), .table td:nth-child(5)  {
+	min-width:120px;width:120px;
+}
+.head th:nth-child(6), .table td:nth-child(6)  {
+	min-width:100px;width:100px;
+}
+.head th:nth-child(7), .table td:nth-child(7)  {
+	min-width:100px;width:100px;
+}
+.head th:nth-child(8), .table td:nth-child(8)  {
+	min-width:120px;width:120px;
+}
+.head th:nth-child(9), .table td:nth-child(9)  {
+	/*min-width:120px;width:120px;*/
+}
+.head th:nth-child(10), .table td:nth-child(10)  {
+	min-width:20px;width:20px;
+}
+.fixed {
+	position:fixed;top:0px;
+}
