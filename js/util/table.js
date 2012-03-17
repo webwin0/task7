@@ -47,7 +47,7 @@ function Table(conf)
 	{
 		var row,
 			id = $(this).attr('row_id');
-		var form = new FillForm({titleId:'#form_title',buttonId:'#form_btn',titleText:'Редактировать пользователя',buttonText:'Редактировать',require:['#f_name','#f_description']})
+		var form = new FillForm({titleId:'#form_title',buttonId:'#form_btn',titleText:'Редактировать пользователя',buttonText:'Редактировать',require:['#f_name']})
 		for (var i in data)
 		{
 			if (data[i].id == id)
@@ -59,7 +59,7 @@ function Table(conf)
 	}
 	function addRecord()
 	{
-		var form = new FillForm({titleId:'#form_title',buttonId:'#form_btn',titleText:'Добавить пользователя',buttonText:'Добавить',require:['#f_name','#f_description']})
+		var form = new FillForm({titleId:'#form_title',buttonId:'#form_btn',titleText:'Добавить пользователя',buttonText:'Добавить',require:['#f_name']})
 		form.fillData({id:'',name:'',age:'',salary:'',city:'1',phones:[],emails:[],sites:[],birthday:'',description:''});
 	}
 	function saveRecord()
